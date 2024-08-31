@@ -2,7 +2,7 @@
 __pycache__
 *.pyc
 .vscode/
-.env
+.env*
 *.sqlite3
 .coverage
 coverage.*
