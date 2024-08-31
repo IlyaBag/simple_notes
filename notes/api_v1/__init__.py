@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from .auth import router as auth_router
-from .router import router as notes_router
+from .notes_api import router as notes_router
 
 
 router = APIRouter(prefix='/api/v1')
