@@ -8,16 +8,16 @@ from validators import validate_note
 from schemas import CreateNote, Note
 
 
-router = APIRouter(prefix='/api/v1', tags=['Notes'])
+router = APIRouter(prefix='/notes', tags=['Notes'])
 
-@router.get('/notes', response_model=list[Note])
+@router.get('/', response_model=list[Note])
 async def get_notes_list(db_session: AsyncSession = Depends(get_db_session)):
     stmt = select(NoteModel).order_by(NoteModel.created_at)
     result: Result = await db_session.execute(stmt)
     notes = result.scalars().all()
     return notes
 
-@router.post('/notes', status_code=status.HTTP_201_CREATED)
+@router.post('/', status_code=status.HTTP_201_CREATED)
 async def create_new_note(
     raw_note: CreateNote,
     db_session: AsyncSession = Depends(get_db_session)
