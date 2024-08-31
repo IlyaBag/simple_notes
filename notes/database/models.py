@@ -13,6 +13,7 @@ class NoteModel(Base):
     __tablename__ = 'notes'
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String(30))
     title: Mapped[str] = mapped_column(String(100))
     content: Mapped[Optional[str]]
     created_at: Mapped[TIMESTAMP] = mapped_column(TIMESTAMP(timezone=True),

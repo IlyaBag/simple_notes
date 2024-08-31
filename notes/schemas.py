@@ -14,4 +14,5 @@ class CreateNote(BaseNote):
 
 class Note(BaseNote):
     id: int
+    username: str
     created_at: datetime
