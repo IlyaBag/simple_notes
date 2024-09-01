@@ -1,33 +1,13 @@
 import json
-from typing import Any
-import httpx
+from typing import Any, Sequence
 
-from schemas import CreateNote
+import httpx
 
 
 CHECKER_URL = 'https://speller.yandex.net/services/spellservice.json/checkTexts'
 
 
-async def validate_note(note: CreateNote) -> CreateNote:
-    """
-    Receives a note and checks the text in its fields for errors. Returns a 
-    new note object with the errors corrected.
-    """
-    texts_corrections = await get_corrections((note.title, note.content or ''))
-    note_title_corrections = texts_corrections[0]
-    note_content_corrections = texts_corrections[1]
-
-    corrected_note_title = fix_mistakes(note.title, note_title_corrections)
-    corrected_note_content = fix_mistakes(note.content or '',
-                                          note_content_corrections)
-
-    validated_note = CreateNote(
-        title=corrected_note_title,
-        content=corrected_note_content
-    )
-    return validated_note
-
-async def get_corrections(texts: tuple[str, str]) -> list:
+async def get_corrections(texts: Sequence[str]) -> list:
     """
     Checks given texts (array of strings) with Yandex Speller API.
 
@@ -85,4 +65,15 @@ def fix_mistakes(source_text: str, corrections: list[dict[str, Any]]) -> str:
         end_pos = start_pos + mistake['len']
         corrected_text += source_text[prev_end_pos:start_pos] + mistake['s'][0]
         prev_end_pos = end_pos
+    corrected_text = f'{corrected_text}{source_text[end_pos:]}'
     return corrected_text
+
+async def correct_texts(texts: Sequence[str]) -> list[str]:
+    """Make corrections in given texts."""
+    corrections = await get_corrections(texts)
+
+    corrected_texts = []
+    for text, correction in zip(texts, corrections):
+        corrected_text = fix_mistakes(text, correction)
+        corrected_texts.append(corrected_text)
+    return corrected_texts

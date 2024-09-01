@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api_v1.auth import get_auth_user_username
 from database.db import get_db_session
 from database.models import NoteModel
-from api_v1.auth import get_auth_user_username
-from validators import validate_note
 from schemas import CreateNote, Note
+from validation.note_validation import validate_note
 
 
 router = APIRouter(prefix='/notes', tags=['Notes'])
